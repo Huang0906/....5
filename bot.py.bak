@@ -7,24 +7,16 @@ from googletrans import Translator
 from humanfriendly import format_timespan, format_size, format_number, format_length
 import time, random, sys, json, codecs, threading, glob, re, string, os, requests, subprocess, six, ast, urllib, urllib.parse,timeit,atexit,youtube_dl,pafy
 from threading import Thread
-
 ####################################################
 botStart = time.time()
 ####################################################
 
 ####################################################
-cl = LINE("chuanshou01@gmail.com","wang651215")
+cl = LINE("")
 ####################################################
-clMID = cl.profile.mid
-profile = cl.getProfile()
-status = str(profile.statusMessage)
-lock = _name = "Ć.Ł βØŦ ℟ǕÑing\n℟ǕÑing....βộṱ\n\n天使が降臨したと伝説\n\n伝説のボボが運行中\n\n✔24時間ぶっ通しで\n\nCreator: Ć.Ł Made in Taiwan\nTeam: L.D.T System\nLine ID: chuanshou_0915"
-if lock not in status:
-    profile.statusMessage = lock + status
-    cl.updateProfile(profile)
-else:
-    pass
+
 ####################################################
+cl.sendMessage("MID",'[自動發送]\n半垢登入成功\n作者:ÄñŁïäń\n作者網址:https://line.me/ti/p/~')
 ####################################################
 
 ####################################################
@@ -68,7 +60,7 @@ myProfile["pictureStatus"] = clProfile.pictureStatus
 ####################################################
 
 ####################################################
-admin=['ubddc32c655b412b8bf0eaf5e6a142ea9','ubddc32c655b412b8bf0eaf5e6a142ea9',clMID]
+admin=[clMID]
 King = "MID"
 ####################################################
 
@@ -82,9 +74,9 @@ wait = {
     'logout': {},
     'rapidFire': {},
     'group': "",
-    'getmid': True,
-    'um': True,#收回高速
-    'cvp': True,#更換頭貼
+    'getmid': False,
+    'um': False,#收回高速
+    'cvp': False,#更換頭貼
     'gbc':{},
     'resset': False#偵測更新
     }
@@ -112,10 +104,7 @@ profile = cl.getProfile()
 msg_dict = {}
 msg_dictt = {}
 ####################################################
-if "ubddc32c655b412b8bf0eaf5e6a142ea9" not in admin:
-    admin.append("ubddc32c655b412b8bf0eaf5e6a142ea9")
-if "ubddc32c655b412b8bf0eaf5e6a142ea9" not in admin:
-    admin.append("ubddc32c655b412b8bf0eaf5e6a142ea9")
+
 ####################################################
 mulai = time.time()
 ####################################################
@@ -133,7 +122,7 @@ def Rtime(secs):
 def cTime_to_datetime(unixtime):
     return datetime.datetime.fromtimestamp(int(str(unixtime)[:len(str(unixtime))-3]))
 def restartBot():
-    print ("[ 訊息 ] 機器重新啟動中...")
+    print ("[ 訊息 ] 機器重啟")
     backupData()
     python = sys.executable
     os.execl(python, python, *sys.argv)
@@ -163,7 +152,7 @@ def logError(text):
 def sendMessageWithMention(to, mid):
     try:
         aa = '{"S":"0","E":"3","M":'+json.dumps(mid)+'}'
-        text_ = '@Yi  出來面對'
+        text_ = '@Yi  遭標註者出來'
         cl.sendMessage(to, text_, contentMetadata={'MENTION':'{"MENTIONEES":['+aa+']}'}, contentType=0)
     except Exception as error:
         logError(error)
@@ -262,11 +251,25 @@ def lineBot(op):
     try:
         if op.type == 0:
             return
+        if op.type == 1:
+            print ("更新配置文件")
+        if op.type == 2:
+            contact = cl.getContact(op.param1)
+            if wait["resset"] == True:
+                if op.param2 == "2":
+                    cl.sendMessage(op.param1,"[自動發送]\n抓到更改名稱摟!!!\n作者:孫孫\n作者網址:https://line.me/ti/p/~yiling_0721_bot\n禁止抄襲@!\n禁止抄襲@!\n禁止抄襲@!\n申明三次")
+                    cl.sendMessage("MID","通知好友更改名稱:\n" + contact.displayName)
+                if op.param2 == "8":
+                    cl.sendMessage(op.param1,"[自動發送]\n抓到更改頭貼/動態頭貼摟!!!\n作者:孫孫\n作者網址:https://line.me/ti/p/~yiling_0721_bot\n禁止抄襲@!\n禁止抄襲@!\n禁止抄襲@!\n申明三次")
+                    cl.sendMessage("MID","通知好友更改動態頭貼:\n" + contact.displayName)
+                if op.param2 == "16":
+                    cl.sendMessage(op.param1,"[自動發送]\n抓到更改個簽摟!!!\n作者:孫孫\n作者網址:https://line.me/ti/p/~yiling_0721_bot\n禁止抄襲@!\n禁止抄襲@!\n禁止抄襲@!\n申明三次")
+                    cl.sendMessage("MID","通知好友更改個簽:\n" + contact.displayName)
         if op.type == 5:
-            print ("[ 5 ] NOTIFIED ADD CONTACT")
+            contact = cl.getContact(op.param1)
+            print ("[ 5 ] 通知添加好友 名字: " + contact.displayName)
             if settings["autoAdd"] == True:
                 cl.findAndAddContactsByMid(op.param1)
-                cl.sendMessage(op.param1, "安安！{} 感謝您加我為好友！半垢V4.0 Ｃ.Ｌ Bot運行中(๑′ᴗ‵๑)！Creator: C.L ".format(str(cl.getContact(op.param1).displayName)))
         if op.type == 11:
             group = cl.getGroup(op.param1)
             contact = cl.getContact(op.param2)
@@ -277,11 +280,27 @@ def lineBot(op):
                     cl.sendMessage(op.param1,cl.getContact(op.param2).displayName + "網址保護中...不要動群組網址！")
                     cl.sendMessage("MID",cl.getContact(op.param2).displayName + "網址保護中...不要動群組網址！")
         if op.type == 13:
-            print ("[ 13 ] NOTIFIED INVITE GROUP")
+            contact1 = cl.getContact(op.param2)
+            contact2 = cl.getContact(op.param3)
+            group = cl.getGroup(op.param1)
             if clMID in op.param3:
-                group = cl.getGroup(op.param1)
-                if op.param2 in admin or op.param2 in owners:
-                    cl.acceptGroupInvitation(op.param1)
+                if settings["autoJoin"] == True:
+                    try:
+                        arrData = ""
+                        text = "%s "%('[進群通知]\n')
+                        arr = []
+                        mention = "@Mili "
+                        slen = str(len(text))
+                        elen = str(len(text) + len(mention) - 1)
+                        arrData = {'S':slen, 'E':elen, 'M':op.param2}
+                        arr.append(arrData)
+                        text += mention + "\n半垢公開招待使用中.....\n感謝您的邀請!!!\n公開半垢作者:ÄñŁïäń\n作者網址:https://line.me/ti/p/~bestissac1234567890"
+                        cl.acceptGroupInvitation(op.param1)
+                        cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
+                        cl.sendContact(op.param1, "MID")
+                        cl.sendMessage('MID',"通知邀請群組:\n" + str(group.name)+"群組 \n"+ str(group.id)+ "\n邀請者:\n" + contact1.displayName + "\nMID\n" + contact1.mid)
+                    except Exception as error:
+                        print(error)
         if op.type == 15:
             contact1 = cl.getContact(op.param2)
             group = cl.getGroup(op.param1)
@@ -312,7 +331,7 @@ def lineBot(op):
                     elen = str(len(text) + len(mention) - 1)
                     arrData = {'S':slen, 'E':elen, 'M':op.param2}
                     arr.append(arrData)
-                    text += mention + "歡迎您加入 {} 小組！".format(str(group.name))
+                    text += mention + "您加入 {} 我們的小窩！".format(str(group.name))
                     cl.sendMessage(op.param1,text, {'MENTION': str('{"MENTIONEES":' + json.dumps(arr) + '}')}, 0)
                 except Exception as error:
                     print(error)
@@ -328,6 +347,7 @@ def lineBot(op):
             group = cl.getGroup(op.param1)
             contact2 = cl.getContact(op.param3)
             print ("[19]有人把人踢出群組 群組名稱: " + str(group.name) + "\n" + op.param1 +"\n踢人者: " + contact1.displayName + "\nMid:" + contact1.mid + "\n被踢者: " + contact2.displayName + "\nMid:" + contact2.mid )
+            cl.sendMessage("MID","有人把人踢出群組 群組名稱: " + str(group.name) + "\n" + op.param1 +"\n踢人者: " + contact1.displayName + "\nMid:" + contact1.mid + "\n被踢者: " + contact2.displayName + "\nMid:" + contact2.mid )
             if settings["protect"] == True:
                 if op.param2 in admin:
                     pass
@@ -457,77 +477,20 @@ def lineBot(op):
                     cl.sendMessage(to,"➲➲➲群組廣播➲➲➲➲ 分享《{}》個群組".format(str(g)))
                     del wait['gbc'][sender]
             if sender in admin:
+				#指令表txt版本
                 if text.lower() == 'help':
-                        cl.sendMessage(to, help())
-                elif msg.text.lower().startswith("add "):
-                    MENTION = eval(msg.contentMetadata['MENTION'])
-                    inkey = MENTION['MENTIONEES'][0]['M']
-                    admin.append(str(inkey))
-                    cl.sendMessage(to, "管理員已增加！")
-                elif msg.text.lower().startswith("del "):
-                    MENTION = eval(msg.contentMetadata['MENTION'])
-                    inkey = MENTION['MENTIONEES'][0]['M']
-                    admin.remove(str(inkey))
-                    cl.sendMessage(to, "已移除權限！")
-                elif text.lower() == 'mymid':
-                    cl.sendMessage(msg.to,"[MID]\n" +  sender)
-                elif msg.text.lower().startswith("mid "):
-                    if 'MENTION' in msg.contentMetadata.keys()!= None:
-                        names = re.findall(r'@(\w+)', text)
-                        mention = ast.literal_eval(msg.contentMetadata['MENTION'])
-                        mentionees = mention['MENTIONEES']
-                        lists = []
-                        for mention in mentionees:
-                            if mention["M"] not in lists:
-                                lists.append(mention["M"])
-                        ret_ = "[ Mid User ]"
-                        for ls in lists:
-                            ret_ += "\n" + ls
-                        cl.sendMessage(msg.to, str(ret_))
-                elif msg.text.lower().startswith("info "):
-                    if 'MENTION' in msg.contentMetadata.keys()!= None:
-                        names = re.findall(r'@(\w+)', text)
-                        mention = ast.literal_eval(msg.contentMetadata['MENTION'])
-                        mentionees = mention['MENTIONEES']
-                        lists = []
-                        for mention in mentionees:
-                            if mention["M"] not in lists:
-                                lists.append(mention["M"])
-                        for ls in lists:
-                            contact = cl.getContact(ls)
-                            cl.sendMessage(msg.to, "[ 名字 ]\n" + contact.displayName +"\n[ 個簽 ]\n" + contact.statusMessage +"\n[ MID ]\n" + contact.mid)
-                            cl.sendImageWithURL(msg.to, str("http://dl.profile.line-cdn.net/" + cl.getContact(ls).pictureStatus)) 
-                            cl.sendImageWithURL(msg.to, str(cl.getProfileCoverURL(ls)))
-                elif msg.text.lower().startswith("adminadd ") or msg.text.lower().startswith("add "):
-                    MENTION = eval(msg.contentMetadata['MENTION'])
-                    inkey = MENTION['MENTIONEES'][0]['M']
-                    if inkey not in ban["admin"] and inkey not in ban["blacklist"] and inkey not in ban["owners"]: 
-                        ban["admin"].append(str(inkey))
-                        cl.sendMessage(to, "已獲得權限！")
-                        json.dump(ban, codecs.open('bot/ban.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-                elif msg.text.lower().startswith("admindel ") or msg.text.lower().startswith("del "):
-                    MENTION = eval(msg.contentMetadata['MENTION'])
-                    inkey = MENTION['MENTIONEES'][0]['M']
-                    if inkey in ban["admin"]:
-                        ban["admin"].remove(str(inkey))
-                        cl.sendMessage(to, "已取消權限！")
-                        json.dump(ban, codecs.open('bot/ban.json','w','utf-8'), sort_keys=True, indent=4, ensure_ascii=False)
-                elif text.lower().startswith('prank '):
-                    MENTION = eval(msg.contentMetadata['MENTION'])
-                    inkey = MENTION['MENTIONEES'][0]['M']
-                    sep = msg.text.split(" ")
-                    text = sep[2]
-                    contact = cl.getContact(inkey)
-                    path = "http://dl.profile.line-cdn.net/" + str(contact.pictureStatus)
-                    cl.sendMessage(to, text, {'MSG_SENDER_NAME': str(contact.displayName),'MSG_SENDER_ICON': str(path)})
-                elif text.lower().startswith('tr-jp '):
-                    sep = text.split(" ")
-                    isi = text.replace(sep[0] + " ","")
-                    translator = Translator()
-                    hasil = translator.translate(isi, dest='ja')
-                    A = hasil.text
-                    cl.sendMessage(to, A)
-                elif text.lower() in ['ginfo']:		
+                        cl.relatedMessage(to, help(),op.message.id)
+                elif text.lower() == 'help1':
+                        cl.relatedMessage(to, help1(),op.message.id)
+                elif text.lower() == 'help2':
+                        cl.relatedMessage(to, help2(),op.message.id)
+                elif text.lower() == 'help3':
+                        cl.relatedMessage(to, help3(),op.message.id)
+                elif text.lower() == 'help4':
+                        cl.relatedMessage(to, help4(),op.message.id)
+                elif text.lower() == 'help5':
+                        cl.relatedMessage(to, help5(),op.message.id)
+                elif text.lower() in ['rg']:				
                     G = cl.getGroup(msg.to)
                     group = cl.getGroup(to)
                     contact = cl.getContact(sender)
@@ -555,7 +518,7 @@ def lineBot(op):
                     ret_ +="\n群組Gid"
                     ret_ +="\n【{}】".format(group.id)
                     ret_ +="\n☲☲☲☲☲☲☲☲☲☲☲☲"
-                    cl.sendMessage(to, str(ret_))
+                    cl.relatedMessage(to, str(ret_),op.message.id)
                 elif text.lower() == 'rlb':
                     a = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
                     b = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
@@ -573,42 +536,16 @@ def lineBot(op):
                     n = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
                     o = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
                     slot = "拉霸機拉霸一次\n第一行==>{}  {}  {}<==\n第二行==>{}  {}  {}<==\n第三行==>{}  {}  {}<==\n第四行==>{}  {}  {}<==\n第五行==>{}  {}  {}<==\n以上是您的拉霸結果".format(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o)
-                    cl.sendMessage(to,slot)
+                    cl.relatedMessage(to,slot,op.message.id)
                     if a == e == i == j == o:
-                        cl.sendMessage(to,"[自動回覆]\n恭喜中獎~~")
+                        cl.relatedMessage(to,"[自動回覆]\n恭喜拉霸機中獎~~",op.message.id)
                         return
-                    cl.sendMessage(to,"[自動回覆]\n再試一次吧QQ")
-                elif msg.text.lower().startswith("fk "):
-                    targets = []
-                    key = eval(msg.contentMetadata["MENTION"])
-                    key["MENTIONEES"][0]["M"]
-                    for x in key["MENTIONEES"]:
-                        targets.append(x["M"])
-                    for target in targets:
-                        try:
-                            cl.kickoutFromGroup(msg.to,[target])
-                        except:
-                            cl.sendMessage(to,"Error")
-         
-                elif msg.text.lower().startswith("ri "):
-                    targets = []
-                    key = eval(msg.contentMetadata["MENTION"])
-                    key["MENTIONEES"][0]["M"]
-                    for x in key["MENTIONEES"]:
-                        targets.append(x["M"])
-                    for target in targets:
-                        try:
-                            cl.sendMessage(to,"來回一次")
-                            cl.findAndAddContactsByMid(target)
-                            cl.kickoutFromGroup(msg.to,[target])
-                            cl.inviteIntoGroup(to,[target])
-                        except:
-                            cl.sendMessage(to,"Error")
+                    cl.relatedMessage(to,"[自動回覆]\n可惜啦ww再試一次吧w",op.message.id)	
                 elif msg.text in ["本日運勢","rls"]:
                     a = random.choice(["大吉！！！運氣旺！ヽ(✿ﾟ▽ﾟ)ノ","中吉！運氣好～(ﾟ∀ﾟ)","小吉〜小有手氣(`・ω・´)","末吉〜還可以(,,・ω・,,)","吉〜普普通通～(´･ω･`)","凶〜有點不好(つд⊂)","大凶〜有點悲劇｡･ﾟ･(ﾉД`)ヽ(ﾟДﾟ )"])
                     slot = "您今天的運氣\n{}<==\n以上是您的測試運氣結果".format(a)
-                    cl.sendMessage(to,slot)
-                    cl.sendMessage(to,"[自動回覆]\n在玩一次吧！ヽ(✿ﾟ▽ﾟ)ノ")	
+                    cl.relatedMessage(to,slot,op.message.id)
+                    cl.relatedMessage(to,"[自動回覆]\n在測試一次吧！ヽ(✿ﾟ▽ﾟ)ノ",op.message.id)	
                 #防翻保護
                 elif "/ti/g/" in msg.text.lower():
                     if settings["autoJoinTicket"] == True:
@@ -623,15 +560,15 @@ def lineBot(op):
                             cl.acceptGroupInvitationByTicket(group.id,ticket_id)
 			    #少數重要功能
                 elif text.lower() == 'rs':
-                    cl.sendMessage(to, "重新啟動中....")	
+                    cl.relatedMessage(to, "重新啟動中....",op.message.id)	
                     restartBot()
                 elif text.lower() == 'rt':
                     eltime = time.time() - mulai
                     bot = "運行時間長達\n" +Runtime(eltime)
-                    cl.sendMessage(to,bot)	
+                    cl.relatedMessage(msg.to,bot,op.message.id)	
                 elif text.lower() == 'save':
                     backupData()
-                    cl.sendMessage(to,"儲存設定成功!")
+                    cl.relatedMessage(to,"儲存設定成功!",op.message.id)
                 elif text.lower() == 'bye':
                     if msg.toType == 2:
                         ginfo = cl.getGroup(to)
@@ -642,88 +579,114 @@ def lineBot(op):
 				#進群退群退副本
                 elif text.lower() == 'aj on':
                     settings["autoJoin"] = True
-                    cl.sendMessage(to, "自動加入群組已開啟 ✔")	
+                    cl.relatedMessage(to, "自動加入群組已開啟 ✔",op.message.id)	
                 elif text.lower() == 'aj off':
                     settings["autoJoin"] = False
-                    cl.sendMessage(to, "自動加入群組已關閉 ✘")	
+                    cl.relatedMessage(to, "自動加入群組已關閉 ✘",op.message.id)	
+                elif text.lower() == 'al on':
+                    settings["autoLeave"] = True
+                    cl.relatedMessage(to, "自動離開副本已開啟 ✔",op.message.id)	
+                elif text.lower() == 'al off':
+                    settings["autoLeave"] = False
+                    cl.relatedMessage(to, "自動離開副本已關閉 ✘",op.message.id)	
+                elif text.lower() == 'qj on':
+                    settings["autoJoinTicket"] = True
+                    cl.relatedMessage(to, "網址自動入群已開啟 ✔",op.message.id)	
                 elif text.lower() == 'qj off':
                     settings["autoJoinTicket"] = False
-                    cl.sendMessage(to, "網址自動入群已關閉 ✘")	
+                    cl.relatedMessage(to, "網址自動入群已關閉 ✘",op.message.id)	
 				#其餘加好友收回自動已讀
                 elif text.lower() == 'ad on':
                     settings["autoAdd"] = True
-                    cl.sendMessage(to, "自動加入好友已開啟 ✔")	
+                    cl.relatedMessage(to, "自動加入好友已開啟 ✔",op.message.id)	
                 elif text.lower() == 'ad off':
                     settings["autoAdd"] = False
-                    cl.sendMessage(to, "自動加入好友已關閉 ✘")	
+                    cl.relatedMessage(to, "自動加入好友已關閉 ✘",op.message.id)	
                 elif text.lower() == 'rr on':
                     settings["reread"] = True
-                    cl.sendMessage(to, "查詢收回開啟 ✔")	
+                    cl.relatedMessage(to, "查詢收回開啟 ✔",op.message.id)	
                 elif text.lower() == 'rr off':
                     settings["reread"] = False
-                    cl.sendMessage(to, "查詢收回關閉 ✘")	
+                    cl.relatedMessage(to, "查詢收回關閉 ✘",op.message.id)	
                 elif text.lower() == 'rd on':
                     settings["autoRead"] = True
-                    cl.sendMessage(to, "自動已讀已開啟 ✔")	
+                    cl.relatedMessage(to, "自動已讀已開啟 ✔",op.message.id)	
                 elif text.lower() == 'rd off':
                     settings["autoRead"] = False
-                    cl.sendMessage(to, "自動已讀已關閉 ✘")	
+                    cl.relatedMessage(to, "自動已讀已關閉 ✘",op.message.id)	
 				#更改顯示
-	
+                elif text.lower() == 'c on':
+                    wait["resset"] = True
+                    cl.relatedMessage(to, "偵測更新帳號\n名子✘/圖片✘/個簽✘\n更新為開啟偵測狀態✔\n名子✔/圖片✔/個簽✔",op.message.id)	
+                elif text.lower() == 'c off':
+                    wait["resset"] = False
+                    cl.relatedMessage(to, "偵測更新帳號\n名子✔/圖片✔/個簽✔\n更新為關閉偵測狀態✘\n名子✘/圖片✘/個簽✘",op.message.id)	
 				#踢人顯示
                 elif text.lower() == 'kc on':
                     settings["kickContact"] = True
-                    cl.sendMessage(to, "踢人標註已開啟 ✔═")	
+                    cl.relatedMessage(to, "踢人標註已開啟 ✔═",op.message.id)	
                 elif text.lower() == 'kc off':
                     settings["kickContact"] = False
-                    cl.sendMessage(to, "踢人標註已關閉 ✘═")	
+                    cl.relatedMessage(to, "踢人標註已關閉 ✘═",op.message.id)	
 				#進群退群
                 elif text.lower() == 'sj on':
                     settings["seeJoin"] = True
-                    cl.sendMessage(to, "入群通知已開啟 ✔═")	
+                    cl.relatedMessage(to, "入群通知已開啟 ✔═",op.message.id)	
                 elif text.lower() == 'sj off':
                     settings["seeJoin"] = False
-                    cl.sendMessage(to, "入群通知已關閉 ✘═")	
+                    cl.relatedMessage(to, "入群通知已關閉 ✘═",op.message.id)	
                 elif text.lower() == 'sl on':
                     settings["seeLeave"] = True
-                    cl.sendMessage(to, "退群通知已開啟 ✔═")	
+                    cl.relatedMessage(to, "退群通知已開啟 ✔═",op.message.id)	
                 elif text.lower() == 'sl off':
                     settings["seeLeave"] = False
-                    cl.sendMessage(to, "退群通知已關閉 ✘═")	
+                    cl.relatedMessage(to, "退群通知已關閉 ✘═",op.message.id)	
                 elif text.lower() == 'm on':
                     settings["detectMention"] = False
-                    cl.sendMessage(to, "標註回覆已開啟 ✔")	
+                    cl.relatedMessage(to, "標註回覆已開啟 ✔",op.message.id)	
                 elif text.lower() == 'm off':
                     settings["detectMention"] = True
-                    cl.sendMessage(to, "標註回覆已關閉 ✘")	
+                    cl.relatedMessage(to, "標註回覆已關閉 ✘",op.message.id)	
                 elif text.lower() == 'ru on':
                     wait["um"] = True
-                    cl.sendMessage(to, "收回已開啟 ✔")	
+                    cl.relatedMessage(to, "收回已開啟 ✔",op.message.id)	
                 elif text.lower() == 'ru off':
                     wait["um"] = False
-                    cl.sendMessage(to, "收回已關閉 ✘")	
+                    cl.relatedMessage(to, "收回已關閉 ✘",op.message.id)	
 				#保護項目
                 elif text.lower() == 'pro on':
                     settings["protect"] = True
-                    cl.sendMessage(to, "群組保護已開啟 ✔")
+                    cl.relatedMessage(to, "群組保護已開啟 ✔",op.message.id)
                 elif text.lower() == 'pro off':
                     settings["protect"] = False
-                    cl.sendMessage(to, "群組保護已關閉 ✘")
+                    cl.relatedMessage(to, "群組保護已關閉 ✘",op.message.id)
                 elif text.lower() == 'ip on':
                     settings["inviteprotect"] = True
-                    cl.sendMessage(to, "群組邀請保護已開啟 ✔")
+                    cl.relatedMessage(to, "群組邀請保護已開啟 ✔",op.message.id)
                 elif text.lower() == 'ip off':
                     settings["inviteprotect"] = False
-                    cl.sendMessage(to, "群組邀請保護已關閉 ✘")
+                    cl.relatedMessage(to, "群組邀請保護已關閉 ✘",op.message.id)
                 elif text.lower() == 'qp on':
                     settings["qrprotect"] = True
-                    cl.sendMessage(to, "群組網址保護已開啟 ✔")
+                    cl.relatedMessage(to, "群組網址保護已開啟 ✔",op.message.id)
                 elif text.lower() == 'qp off':
                     settings["qrprotect"] = False
-                    cl.sendMessage(to, "群組網址保護已關閉 ✘")
+                    cl.relatedMessage(to, "群組網址保護已關閉 ✘",op.message.id)
+                elif text.lower() in ['rk on']:
+                    if msg.toType ==2:
+                        jg["JoinGroup"][to] = True
+                        cl.relatedMessage(to, "進群保護開啟 ✔",op.message.id)
+                elif text.lower() in ['rk off']:
+                    if msg.toType ==2 :
+                        try:
+                            del jg["JoinGroup"][to]
+                            cl.relatedMessage(to, "進群保護關閉 ✘",op.message.id)
+                        except:
+                            cl.relatedMessage(to, "沒有開啟進群保護關閉 ✘",op.message.id)
+				#機器開關查詢
                 elif text.lower() == 'set':
                     try:
-                        ret_ = "Ｃ.Ｌ Set List"
+                        ret_ = "ÄñŁïäń Set List"
                         ret_ += "\n進群類型 開關"
                         if settings["autoJoin"] == True: ret_ += "\n自動入群 ✅"
                         else: ret_ += "\n自動入群 ❌"
@@ -752,21 +715,37 @@ def lineBot(op):
                         else: ret_ += "\n入群通知關閉 ❌"
                         if settings["seeLeave"] == True: ret_ += "\n退群通知開啟 ✅"
                         else: ret_ += "\n退群通知關閉 ❌"
-                        ret_ += "\n作者: 傳說"
-                        ret_ += "\nID: chuanshou_0915"
-                        ret_ += "\nQR:http://line.me/ti/p/IA61-_cGz8"
+                        if msg.toType==2:
+                            ret_ += "\nÄñŁïäń Group Set List"
+                            G = cl.getGroup(msg.to)
+                            ret_ += "\n群組名稱\n<{}>".format(str(G.name))
+                            ret_ += "\n進群保護 開關"
+                            if G.id in jg["JoinGroup"] : ret_+="\n進群保護 ✅"
+                            else: ret_ += "\n進群保護 ❌"
+                        ret_ += "\n作者: 那暗戀
+                        ret_ += "\nID: bestissac1234567890"
+                        ret_ += "\nQR:http://line.me/ti/p/~bestissac1234567890"
                         ret_ += "\n<查詢完畢>"
                         cl.sendMessage(to, str(ret_))
                     except Exception as e:
                         cl.sendMessage(msg.to, str(e))
 				#機器簡介
                 elif text.lower() == 'about':
+                    try:
+                        cl.kickoutFromGroup(to,["HEY"])
+                        cl.inviteIntoGroup(to, ["HEY"])
+                    except Exception as e:
+                        if e.reason == "request blocked":
+                            aa = "無法執行(規制)"
+                        else:
+                            aa = "可以執行(無規制)"
                         arr = []
                         t1 = time.time()
+                        cl.sendMessage("MID", "About檢查中......")
                         t2 = (time.time() - t1)/100
-                        owner = "ubddc32c655b412b8bf0eaf5e6a142ea9"
+                        owner = "MID"
                         creator = cl.getContact(owner)
-                        contact = cl.getContact(owner)
+                        contact = cl.getContact(clMID)
                         grouplist = cl.getGroupIdsJoined()
                         contactlist = cl.getAllContactIds()
                         blockedlist = cl.getBlockedContactIds()
@@ -780,7 +759,15 @@ def lineBot(op):
                         ret_ += "\n➲最愛人數: {}".format(str(len(cl.getFavoriteMids())))
                         ret_ += "\n➲封鎖好友: {}".format(str(len(cl.getBlockedContactIds())))
                         ret_ += "\n➲邀請群組: {}".format(str(len(cl.getGroupIdsInvited())))
-                        ret_ += "\n➲LineID:{}".format(clProfile.userid)
+                        ret_ += "\n➲Line帳號ID:\n➲{}".format(clProfile.userid)
+                        ret_ += "\n➲個人名稱:\n➲{}".format(contact.displayName)
+                        ret_ += "\n➲個人網址(一):\n➲http://line.me/ti/p/{}".format(str(clProfile.userid))
+                        ret_ += "\n➲個人網址(二):\n➲http://line.me/ti/p/{}".format(str(clSetting.contactMyTicket))
+                        ret_ += "\n➲識別碼:\n➲{}".format(str(clProfile.mid))
+                        ret_ += "\n《狀態規制》"
+                        ret_ += "\n➲踢人狀態: {}".format(aa)
+                        ret_ += "\n➲邀請狀態: {}".format(aa)
+                        ret_ += "\n➲取消狀態: 可以執行(無規制)"
                         ret_ += "\n《個人開關》"
                         if settings["autoJoin"] == True: ret_ += "\n➲自動入群 ✅"
                         else: ret_ += "\n➲自動入群 ❌"
@@ -791,35 +778,44 @@ def lineBot(op):
                         if settings["autoRead"] == True: ret_ += "\n➲自動已讀 ✅"
                         else: ret_ += "\n➲自動已讀 ❌"
                         ret_ += "\n《關於半垢》"
-                        ret_ += "\n➲Ć.Ł βØŦ ｖ４.０"
-                        ret_ += "\n➲半垢主人:{}" .format(creator.displayName)
+                        ret_ += "\n➲商業半垢 V5.2"
+                        ret_ += "\n➲半垢作者:\n➲{}".format(creator.displayName)
                         ret_ += "\n➲半垢極限速度:\n➲{}".format(str(t2))
-                        ret_ += "\n➲半垢運行時間:\n➲l─────●────l\n➲{}\n➲⇆ ㅤㅤ◁  ❚ ❚  ▷    ↻".format(bot)
-                        cl.sendMessage(to, str(ret_))
-                        cl.relatedMessage(msg.to, str(e))
-                elif text.lower() == 'link on':
+                        ret_ += "\n➲半垢運行時間:\n➲l───────●──────l\n➲{}\n➲⇆ ㅤ ㅤ◁  ㅤ❚ ❚  ㅤ▷  ㅤ↻".format(bot)
+                        cl.relatedMessage(to, str(ret_),op.message.id)
+                    except Exception as e:
+                        cl.relatedMessage(msg.to, str(e),op.message.id)
+                elif text.lower() == 'ru':
                     if msg.toType == 2:
                         group = cl.getGroup(to)
                         if group.preventedJoinByTicket == False:
-                            cl.sendMessage(to, "群組網址已開")
+                            ticket = cl.reissueGroupTicket(to)
+                            cl.relatedMessage(to, "[ 群組網址 ]\nhttps://line.me/R/ti/g/{}".format(str(ticket)),op.message.id)
+                        else:
+                            cl.relatedMessage(to, "群組沒有開啟網址",op.message.id)
+                elif text.lower() == 'code on':
+                    if msg.toType == 2:
+                        group = cl.getGroup(to)
+                        if group.preventedJoinByTicket == False:
+                            cl.relatedMessage(to, "群組網址已開",op.message.id)
                         else:
                             group.preventedJoinByTicket = False
                             cl.updateGroup(group)
-                            cl.sendMessage(to, "開啟成功")
-                elif text.lower() == 'link off':
+                            cl.relatedMessage(to, "開啟成功",op.message.id)
+                elif text.lower() == 'code off':
                     if msg.toType == 2:
                         group = cl.getGroup(to)
                         if group.preventedJoinByTicket == True:
-                            cl.sendMessage(to, "群組網址已關")
+                            cl.relatedMessage(to, "群組網址已關",op.message.id)
                         else:
                             group.preventedJoinByTicket = True
                             cl.updateGroup(group)
-                            cl.sendMessage(to, "關閉成功")
+                            cl.relatedMessage(to, "關閉成功",op.message.id)
                 elif text.lower().startswith("rt:"):
                     id = text[3:].split(':')
                     for x in range(int(id[1])):
                         cl.sendPostToTalk(to,id[0])
-                    cl.sendMessage(to, "文章分享完畢")
+                    cl.relatedMessage(to, "文章分享完畢",op.message.id)
                 elif text.lower().startswith("rpc:"):
                     separate = text.split(":")
                     bctxt = text.replace(separate[0] + ":","")
@@ -846,50 +842,49 @@ def lineBot(op):
                         cl.sendMessage(to,"➲➲➲群組廣播➲➲➲➲ 分享《{}》個群組".format(str(g)))
                     elif data[0] in ['pic', 'contact', 'post']:
                         wait['gbc'][sender] = {'type':data[0],'text':data[1],'over':data[2]}
-                        cl.sendMessage(to,'請發送你要廣播的東西~')
+                        cl.relatedMessage(to,'請發送你要廣播的東西~',op.message.id)
 				#測速功能
-				 
                 elif text.lower() == 'sp':
                     start = time.time()
-                    cl.sendMessage(to, "趴搭趴搭.....")
+                    cl.sendMessage("MID", "Test Speed......")
                     elapsed_time = time.time() - start
-                    cl.sendMessage(to,format(str(elapsed_time)) + " 秒")
+                    cl.relatedMessage(to,format(str(elapsed_time)) + " seconds",op.message.id)
                 elif text.lower() == 'speed':
                     time0 = timeit.timeit('"-".join(str(n) for n in range(100))', number=10000)
                     str1 = str(time0)
                     start = time.time()
-                    cl.sendMessage(to,'處理速度\n' + str1 + ' seconds')
+                    cl.relatedMessage(to,'處理速度\n' + str1 + ' seconds',op.message.id)
                     elapsed_time = time.time() - start
-                    cl.sendMessage(to,'指令反應\n' + format(str(elapsed_time)) + '秒')
+                    cl.relatedMessage(to,'指令反應\n' + format(str(elapsed_time)) + '秒',op.message.id)
                 elif text.lower() == 'spt':
                     start = time.time()
-                    cl.sendMessage(to, "速度約為......")
+                    cl.sendMessage("MID", "Test Speed......")
                     elapsed_time = (time.time() - start)/100
-                    cl.sendMessage(to,format(str(elapsed_time)) + " 秒")
+                    cl.relatedMessage(to,format(str(elapsed_time)) + " seconds",op.message.id)
                 elif text.lower() == 'spk':
                     start = time.time()
-                    cl.sendMessage(to, "Test Speed......")
+                    cl.sendMessage("MID", "Test Speed......")
                     elapsed_time = (time.time() - start)/100
-                    cl.sendMessage(to,"Kick One\n" + format(str(elapsed_time)) + " 秒")
+                    cl.relatedMessage(to,"Kick One\n" + format(str(elapsed_time)) + "秒",op.message.id)
                 elif msg.text in ["/sp","/speed"]:
                     t1 = time.time()
-                    cl.sendMessage(to, "第一次")
+                    cl.sendMessage("MID", "First Term")
                     t2 = time.time() - t1
                     time.sleep(0.01)
                     t3 = time.time()
-                    cl.sendMessage(to, "第二次")
+                    cl.sendMessage("MID", "Second Term")
                     t4 = time.time() - t3
                     time.sleep(0.01)
                     t5 = time.time()
-                    cl.sendMessage(to, "第三次")
+                    cl.sendMessage("MID", "Third Term")
                     t6 = time.time() - t5
                     time.sleep(0.01)
                     t7 = time.time()
-                    cl.sendMessage(to, "第四次")
+                    cl.sendMessage("MID", "Four Term")
                     t8 = time.time() - t7
                     time.sleep(0.01)
                     t9 = time.time()
-                    cl.sendMessage(to, "第五次")
+                    cl.sendMessage("MID", "Firth Term")
                     t10 = time.time() - t9
                     time.sleep(0.01)
                     a1 = timeit.timeit('"-".join(str(n) for n in range(100))', number=10000)
@@ -903,19 +898,19 @@ def lineBot(op):
                     a5 = timeit.timeit('"-".join(str(n) for n in range(100))', number=10000)
                     b5 = str(a5)
                     ret_ = "     [反應速度]\n"
-                    ret_ += "第1次:{}秒\n".format(str(t2))
-                    ret_ += "第2次:{}秒\n".format(str(t4))
-                    ret_ += "第3次:{}秒\n".format(str(t6))
-                    ret_ += "第4次:{}秒\n".format(str(t8))
-                    ret_ += "第5次:{}秒\n     [處理速度]\n".format(str(t10))
-                    ret_ += "第1次:{}秒\n".format(str(b1))
-                    ret_ += "第2次:{}秒\n".format(str(b2))
-                    ret_ += "第3次:{}秒\n".format(str(b3))
-                    ret_ += "第4次:{}秒\n".format(str(b4))
-                    ret_ += "第5:{}秒\n".format(str(b5))
-                    ret_ += "     [以上為Ｃ.Ｌ速度測試]"
-                    cl.sendMessage(to, str(ret_))
-                    cl.relatedMessage("MID", str(ret_))
+                    ret_ += "First:{}秒\n".format(str(t2))
+                    ret_ += "Second:{}秒\n".format(str(t4))
+                    ret_ += "Third:{}秒\n".format(str(t6))
+                    ret_ += "Four:{}秒\n".format(str(t8))
+                    ret_ += "Five:{}秒\n     [處理速度]\n".format(str(t10))
+                    ret_ += "First:{}秒\n".format(str(b1))
+                    ret_ += "Second:{}秒\n".format(str(b2))
+                    ret_ += "Third:{}秒\n".format(str(b3))
+                    ret_ += "Four:{}秒\n".format(str(b4))
+                    ret_ += "Five:{}秒\n".format(str(b5))
+                    ret_ += "     [Test ]"
+                    cl.relatedMessage(to, str(ret_),op.message.id)
+                    cl.relatedMessage("MID", str(ret_),op.message.id)
 				#踢人指令
                 elif text.lower().startswith("ri:"):
                     separate = text.split(":")
@@ -928,6 +923,63 @@ def lineBot(op):
                     midd = text.replace(separate[0] + ":","")
                     cl.findAndAddContactsByMid(midd)
                     cl.inviteIntoGroup(to,[midd])
+                elif text.lower().startswith("vk:"):
+                    separate = text.split(":")
+                    midd = text.replace(separate[0] + ":","")
+                    cl.kickoutFromGroup(msg.to,[midd])
+                    cl.findAndAddContactsByMid(midd)
+                    cl.inviteIntoGroup(msg.to,[midd])
+                    cl.cancelGroupInvitation(msg.to,[midd])
+                elif msg.text.lower().startswith("kt "):
+                    targets = []
+                    key = eval(msg.contentMetadata["MENTION"])
+                    key["MENTIONEES"][0]["M"]
+                    for x in key["MENTIONEES"]:
+                        targets.append(x["M"])
+                    for target in targets:
+                        try:
+                            cl.kickoutFromGroup(msg.to,[target])
+                        except:
+                            cl.relatedMessage(to,"目前處於 帳號規制狀態中",op.message.id)
+                elif msg.text.lower().startswith("ri "):
+                    targets = []
+                    key = eval(msg.contentMetadata["MENTION"])
+                    key["MENTIONEES"][0]["M"]
+                    for x in key["MENTIONEES"]:
+                        targets.append(x["M"])
+                    for target in targets:
+                        try:
+                            cl.findAndAddContactsByMid(target)
+                            cl.kickoutFromGroup(msg.to,[target])
+                            cl.inviteIntoGroup(to,[target])
+                        except:
+                            cl.relatedMessage(to,"目前處於 帳號規制狀態中",op.message.id)
+                elif msg.text.lower().startswith("ti "):
+                    targets = []
+                    key = eval(msg.contentMetadata["MENTION"])
+                    key["MENTIONEES"][0]["M"]
+                    for x in key["MENTIONEES"]:
+                        targets.append(x["M"])
+                    for target in targets:
+                        try:
+                            cl.findAndAddContactsByMid(target)
+                            cl.inviteIntoGroup(to,[target])
+                        except:
+                            cl.relatedMessage(to,"目前處於 帳號規制狀態中",op.message.id)
+                elif msg.text.lower().startswith("vk "):
+                    targets = []
+                    key = eval(msg.contentMetadata["MENTION"])
+                    key["MENTIONEES"][0]["M"]
+                    for x in key["MENTIONEES"]:
+                        targets.append(x["M"])
+                    for target in targets:
+                        try:
+                            cl.kickoutFromGroup(msg.to,[target])
+                            cl.findAndAddContactsByMid(target)
+                            cl.inviteIntoGroup(to,[target])
+                            cl.cancelGroupInvitation(msg.to,[target])
+                        except:
+                            cl.relatedMessage(to,"目前處於 帳號規制狀態中",op.message.id)
                 elif text.lower().startswith("tnk:"):
                         separate = text.split(":")
                         _name = text.replace(separate[0] + ":","")
@@ -944,17 +996,24 @@ def lineBot(op):
                                     cl.kickoutFromGroup(msg.to,[target])
                                 except:
                                     pass
-                elif msg.text.lower().startswith("kt "):
-                    targets = []
-                    key = eval(msg.contentMetadata["MENTION"])
-                    key["MENTIONEES"][0]["M"]
-                    for x in key["MENTIONEES"]:
-                        targets.append(x["M"])
-                    for target in targets:
-                        try:
-                            cl.kickoutFromGroup(msg.to,[target])
-                        except:
-                            cl.sendMessage(to,"目前處於 帳號規制中")
+                elif text.lower() == 'mine':
+                     try:
+                         cl.kickoutFromGroup(msg.to, ["ÄñŁïäń_KICKING"])
+                         cl.sendMessage(msg.to, "正常")
+                     except Exception as e:
+                         if e.reason == "request blocked":
+                            me = cl.getContact(sender)
+                            cl.relatedMessage(msg.to,"[查詢資料]\n"+"使用者名稱: "+me.displayName+"\n使用者Mid: "+sender+"\n踢人狀態: request blocked\n邀請狀態: request blocked\n取消狀態: 可以執行\n[完]",op.message.id)
+                         else:
+                            me = cl.getContact(sender)
+                            cl.relatedMessage(msg.to,"[查詢資料]\n"+"使用者名稱: "+me.displayName+"\n使用者Mid: "+sender+"\n踢人狀態: 可以執行\n邀請狀態: 可以執行\n取消狀態: 可以執行\n[完]",op.message.id)
+                elif msg.text == "me": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/y2l8Rb2bn9").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
+                elif msg.text == "me1": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/a2n8Rf25nb").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
+                elif msg.text == "me2": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/Pcm2R923n6").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
+                elif msg.text == "me3": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/2eo8Re27n2").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
+                elif msg.text == "me4": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/B7ocRb2cnc").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
+                elif msg.text == "me5": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/M8obRf21n9").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
+                elif msg.text == "met": cl.sendMessage(msg.to, text="播放歌曲資料\n作者名稱:"+cl.getContact(msg._from).displayName, contentMetadata={'previewUrl': 'http://dl.profile.line-cdn.net/' + cl.getContact(msg._from).pictureStatus, 'i-installUrl': 'line://nv/profilePopup/mid=' + msg._from, 'ORGCONTP': 'MUSIC', 'type': 'mt', 'subText': "\n歌手個簽:\n"+cl.getContact(msg._from).statusMessage, 'a-installUrl': 'http://google.com', 'a-packageName': 'jp.naver.line.music', 'playUrl': str(BeautifulSoup(requests.get("https://anonfile.com/M8obRf21n9").text, "html.parser").find("a", id="download-url")['href']), 'countryCode': 'TW', 'a-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'i-linkUri': 'line://nv/profilePopup/mid=' + msg._from, 'text': cl.getContact(msg._from).displayName, 'id': 'mt000000000a6b79f9','linkUri': 'line://nv/profilePopup/mid=' + msg._from}, contentType=19)
                 elif msg.text.lower().startswith("mid "):
                     if 'MENTION' in msg.contentMetadata.keys()!= None:
                         names = re.findall(r'@(\w+)', text)
@@ -967,46 +1026,114 @@ def lineBot(op):
                         ret_ = ""
                         for ls in lists:
                             ret_ += "" + ls
-                        cl.relatedMessage(msg.to, str(ret_))
-               				#mid或其餘方式功能
+                        cl.relatedMessage(msg.to, str(ret_),op.message.id)
+                elif text.lower().startswith("公告:"):
+                        separate = text.split(":")
+                        a = text.replace(separate[0] + ":","")
+                        c = ChatRoomAnnouncementContents()
+                        c.displayFields = 5
+                        c.text = a
+                        c.link = "line://nv/chatMsg?chatId={}&messageId={}".format(to,msg.id)
+                        try:            
+                            cl.createChatRoomAnnouncement(to, 0, c)
+                            sendMention(to, "成功新增公告 by. @!", [sender])
+                        except Exception as e:
+                            cl.sendMessage(to, str(e))
+                elif text.lower().startswith("mc:"):
+                    separate = text.split(":")
+                    mmid = text.replace(separate[0] + ":","")
+                    cl.sendContact(to, mmid)
+                elif msg.text.lower().startswith("cn:"):
+                    separate = text.split(":")
+                    isi = text.replace(separate[0] + ":","")
+                    translator = Translator()
+                    hasil = translator.translate(isi, dest='zh-tw')
+                    A = hasil.text
+                    cl.relatedMessage(msg.to, A,op.message.id)
+                elif msg.text.lower().startswith("jp:"):
+                    separate = text.split(":")
+                    isi = text.replace(separate[0] + ":","")
+                    translator = Translator()
+                    hasil = translator.translate(isi, dest='ja')
+                    A = hasil.text
+                    cl.relatedMessage(msg.to, A,op.message.id)
+                elif msg.text.lower().startswith("en:"):
+                    separate = text.split(":")
+                    isi = text.replace(separate[0] + ":","")
+                    translator = Translator()
+                    hasil = translator.translate(isi, dest='en')
+                    A = hasil.text
+                    cl.relatedMessage(msg.to, A,op.message.id)
+				#Token
+                elif text.lower() == 'token':
+                    t= threading.Thread(target=gettoken, args=(to,))
+                    t.start()
+                    sleep(2) 
+                    f = open('linepy/url.txt','r')
+                    url = f.read()
+                    f.close()
+                    cl.sendMessage(to,"兩分鐘內登入獲取Token")
+                    cl.sendMessage(to,url)
+                    t.join()
+				#mid或其餘方式功能
                 elif text.lower().startswith("mc:"):
                         separate = text.split(":")
                         mmid = text.replace(separate[0] + ":","")
                         cl.sendContact(to, mmid)
-                        cl.sendMessage(to,"幫您丟出友資\n友資MID\n"+mmid+"\n幫您生成完畢")
+                        cl.relatedMessage(to,"幫您丟出友資\n友資MID\n"+mmid+"\n幫您生成完畢",op.message.id)
                 elif text.lower().startswith("inv:"):
                         separate = text.split(":")
                         midd = text.replace(separate[0] + ":","")
                         cl.findAndAddContactsByMid(midd)
                         cl.inviteIntoGroup(msg.to,[midd])
-                        cl.sendMessage(to,"已經幫您邀請\n"+midd+"\n邀請完畢\n或可能此人已經在群組")
+                        cl.relatedMessage(to,"已經幫您邀請\n"+midd+"\n邀請完畢\n或可能此人已經在群組",op.message.id)
                 elif text.lower().startswith("ce:"):
                         separate = text.split(":")
                         txt = text.replace(separate[0] + ":","")
                         cl.createPost(txt)
-                        cl.sendMessage(to,"正在幫您生成貼文\n貼文創建內容:\n" + txt + "\n貼文創建完畢")
-                elif text.lower().startswith("cn:"):
+                        cl.relatedMessage(to,"正在幫您生成貼文\n貼文創建內容:\n" + txt + "\n貼文創建完畢",op.message.id)
+                elif text.lower().startswith("pn:"):
                         separate = text.split(":")
                         string = text.replace(separate[0] + ":","")
                         if len(string) <= 20:
                             profile = cl.getProfile()
                             profile.displayName = string
                             cl.updateProfile(profile)
-                            cl.sendMessage(to,"名稱已更改為\n=>" + string + "")
+                            cl.relatedMessage(to,"名稱已更改為\n=>" + string + "",op.message.id)
                         if len(string) >= 21:
-                            cl.sendMessage(to,"[警告]\n名稱不能突破20字喔!!\n超過20字強制更改\n將會凍帳一小時\n以下是您想突破的文字名稱\n" + string + "")
+                            cl.relatedMessage(to,"[警告]\n名稱不能突破20字喔!!\n超過20字強制更改\n將會凍帳一小時\n以下是您想突破的文字名稱\n" + string + "",op.message.id)
+                elif text.lower() == 'us':
+                    try:
+                        cl.unsendMessage(msg.relatedMessageId)
+                    except Exception as e:
+                        cl.sendMessage(to, "")
+                elif " second" in msg.text.lower():
+                    try:
+                        cl.unsendMessage(msg.relatedMessageId)
+                    except Exception as e:
+                        cl.sendMessage(to, "")
+                elif "✘" in msg.text.lower():
+                    try:
+                        cl.unsendMessage(msg.relatedMessageId)
+                    except Exception as e:
+                        cl.sendMessage(to, "")
+                elif "✔" in msg.text.lower():
+                    try:
+                        cl.unsendMessage(msg.relatedMessageId)
+                    except Exception as e:
+                        cl.sendMessage(to, "")
 				#發送文字指令
                 elif text.lower().startswith("say "):
                     x = text.split(' ')
                     if len(x) == 2:
-                        cl.sendMessage(to,x[1])
+                        cl.relatedMessage(to,x[1],op.message.id)
                     elif len(x) == 3:
                         try:
                             c = int(x[2])
                             for c in range(c):
-                                cl.sendMessage(to,x[1])
+                                cl.relatedMessage(to,x[1],op.message.id)
                         except:
-                            cl.sendMessage(to,"無法正確執行此指令")
+                            cl.relatedMessage(to,"無法正確執行此指令",op.message.id)
 				#標註指令
                 elif text.lower().startswith('tag '):
                     MENTION = eval(msg.contentMetadata['MENTION'])
@@ -1018,8 +1145,8 @@ def lineBot(op):
                     for var in range(0,num):
                         sendMessageWithMention(to, inkey)
                         elapsed_time = time.time() - start
-                    cl.sendMessage(to, "標註完畢 共標註了{}次".format(number))
-                    cl.sendMessage(to, "標註完畢\n標註共計: %s秒" % (elapsed_time))
+                    cl.relatedMessage(to, "標註完畢 共標註了{}次".format(number),op.message.id)
+                    cl.relatedMessage(to, "標註完畢\n標註共計: %s秒" % (elapsed_time),op.message.id)
                 elif text.lower().startswith('tg '):
                     MENTION = eval(msg.contentMetadata['MENTION'])
                     inkey = MENTION['MENTIONEES'][0]['M']
@@ -1028,8 +1155,8 @@ def lineBot(op):
                     num = int(number)
                     for var in range(0,num):
                         sendMessagegat(to, inkey)
-                    cl.sendMessage(to, "標註完畢 共標註了{}次".format(number))
-                elif text.lower() == 'tagall':
+                    cl.relatedMessage(to, "標註完畢 共標註了{}次".format(number),op.message.id)
+                elif text.lower() == 'rgall':
                     group = cl.getGroup(msg.to)
                     nama = [contact.mid for contact in group.members]
                     k = len(nama)//20
@@ -1063,57 +1190,23 @@ def lineBot(op):
                         profile = cl.getProfile()
                         profile.statusMessage = string
                         cl.updateProfile(profile)
-                        cl.sendMessage(to,"個簽狀態已更改為 :  \n" + string)                       
-                elif text.lower() == '抽':
-                    a = random.choice(["大吉！！！運氣旺！ヽ(✿ﾟ▽ﾟ)ノ","中吉！運氣好～(ﾟ∀ﾟ)","小吉〜小有手氣(`・ω・´)","末吉〜還可以(,,・ω・,,)","吉〜普普通通～(´･ω･`)","凶〜有點不好(つд⊂)","大凶〜有點悲劇｡･ﾟ･(ﾉД`)ヽ(ﾟДﾟ )"])
-                    slot = "您今天的運氣\n{}<==\n以上是您的測試運氣結果".format(a)
-                    cl.sendMessage(to,slot)                            
-    #====================================================================================================================================================================遊客
-    #===================================================================================================================================================================
-            if sender not in admin:
-                if msg.text in ["幹","淦","fuck","肏","幹你娘","操","靠","靠腰","靠北","靠杯"]:
-                    a = random.choice(["ヽ(✿ﾟ▽ﾟ)ノ","(ﾟ∀ﾟ)","(`・ω・´)","ò∀ó","(´･ω･`)","(つд⊂)","｡･ﾟ･(ﾉД`)ヽ(ﾟДﾟ )"])
-                    slot = "不要講髒話辣\n{}".format(a)
-                    cl.sendMessage(to,slot)
-                elif text.lower() == '本日運勢':
-                    a = random.choice(["大吉！！！運氣旺！ヽ(✿ﾟ▽ﾟ)ノ","中吉！運氣好～(ﾟ∀ﾟ)","小吉〜小有手氣(`・ω・´)","末吉〜還可以(,,・ω・,,)","吉〜普普通通～(´･ω･`)","凶〜有點不好(つд⊂)","大凶〜有點悲劇｡･ﾟ･(ﾉД`)ヽ(ﾟДﾟ )"])
-                    slot = "您今天的運氣\n{}<==\n以上是您的測試運氣結果".format(a)
-                    cl.sendMessage(to,slot)
-                elif text.lower() == '抽':
-                    a = random.choice(["大吉！！！運氣旺！ヽ(✿ﾟ▽ﾟ)ノ","中吉！運氣好～(ﾟ∀ﾟ)","小吉〜小有手氣(`・ω・´)","末吉〜還可以(,,・ω・,,)","吉〜普普通通～(´･ω･`)","凶〜有點不好(つд⊂)","大凶〜有點悲劇｡･ﾟ･(ﾉД`)ヽ(ﾟДﾟ )"])
-                    slot = "您今天的運氣\n{}<==\n以上是您的測試運氣結果".format(a)
-                    cl.sendMessage(to,slot)
-                elif text.lower() == 'rls':
-                    a = random.choice(["大吉！！！運氣旺！ヽ(✿ﾟ▽ﾟ)ノ","中吉！運氣好～(ﾟ∀ﾟ)","小吉〜小有手氣(`・ω・´)","末吉〜還可以(,,・ω・,,)","吉〜普普通通～(´･ω･`)","凶〜有點不好(つд⊂)","大凶〜有點悲劇｡･ﾟ･(ﾉД`)ヽ(ﾟДﾟ )"])
-                    slot = "您今天的運氣\n{}<==\n以上是您的測試運氣結果".format(a)
-                    cl.sendMessage(to,slot)
-
-                elif text.lower() == 'rlb':
-                    a = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    b = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    c = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    d = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    e = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    f = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    g = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    h = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    i = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    j = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    k = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    l = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    m = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    n = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    o = random.choice(["０","９","８","７","６","５","４","３","２","２","１"])
-                    slot = "拉霸機拉霸一次\n第一行==>{}  {}  {}<==\n第二行==>{}  {}  {}<==\n第三行==>{}  {}  {}<==\n第四行==>{}  {}  {}<==\n第五行==>{}  {}  {}<==\n以上是您的拉霸結果".format(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o)
-                    cl.sendMessage(to,slot)
-                    if a == e == i == j == o:
-                        cl.sendMessage(to,"[自動回覆]\n恭喜中獎~~")
-                        return
-                    cl.sendMessage(to,"[自動回覆]\n再試一次吧QQ")
-                elif text.lower() == 'help':
-                    cl.sendMessage(to, help1())
-    #===========================================================================================================================================================================遊客
-    #=============================================================================================================================================================================
+                        cl.relatedMessage(to,"個簽狀態已更改為 :  \n" + string,op.message.id)
+				#登出指令
+                elif text.lower() in ['logout']:
+                    cl.relatedMessage(msg.to, "直接登出請輸入[登出][Y]\n手動登出請輸入[手動][N]",op.message.id)	
+                    wait['logout'][msg.to] = sender
+                elif text.lower() in ["登出","y","Y","N","n","手動"]:
+                    if msg.to in wait['logout'] and msg._from== wait['logout'][msg.to]:
+                        if text.lower() in ["登出","y","Y"]:
+                            cl.relatedMessage(msg.to, "將自動幫您登出機器",op.message.id)	
+                            cl.relatedMessage(to,"[提示]\n已經自動登出後台伺服器",op.message.id)	
+                            os._exit(0)	
+                            del wait['logout'][msg.to]
+                        elif text.lower() in ["N","n","手動"]:
+                            cl.relatedMessage(msg.to, "請點擊以下網址\nline://nv/connectedDevices/\n進行手動登出",op.message.id)	
+                            del wait['logout'][msg.to]
+                    else:
+                        pass
         if op.type == 26:
             try:
                 msg = op.message
@@ -1160,8 +1253,8 @@ def lineBot(op):
             msg_id = op.param2
             if msg_id in msg_dict:
                 if msg_dict[msg_id]["from"] not in bl:
-                    if msg_dict[msg_id]["from"] not in red["reread"]:
-                        if at not in red["reread"]:
+                    if msg_dict[msg_id]["from"] not in red["rereadMID"]:
+                        if at not in red["rereadGID"]:
                             if at not in red["reread"]:
                                 rereadtime = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(int(round(msg_dict[msg_id]["createdTime"]/1000))))
                                 newtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -1266,8 +1359,8 @@ def lineBot(op):
                         for ticket_id in n_links:
                             group = cl.findGroupByTicket(ticket_id)
                             cl.acceptGroupInvitationByTicket(group.id,ticket_id)
-                            cl.sendMessage(to, "使用網址成功淺入《%s》群組" % str(group.name))
-                            cl.sendMessage(to, "群組網址\n《https://line.me/R/ti/g/》\n《%s》" % str(ticket_id))
+                            cl.sendMessage("MID", "網址成功進入《%s》群組" % str(group.name))
+                            cl.sendMessage("MID", "群組網址\n《https://line.me/R/ti/g/》\n《%s》" % str(ticket_id))
         if op.type == 55:
             try:
                 if op.param1 in read['readPoint']:
